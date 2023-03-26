@@ -1,4 +1,4 @@
-#include <HTTP.h>
+
 
 SetOption("CommissionMode",3);   
     SetOption( "CommissionAmount", 9 ); // ustawienie prowizji   
@@ -326,7 +326,7 @@ GfxTextOut( "Created by... Piotr Stypulkowski ", x+1000, y+39 );
 //Coded by Rajandran R 
 //Founder - Marketcalls - https://www.marketcalls.in
 //CoFounder - Algomojo - https://www.algomojo.com
-//Coded on 12th Jun 2019
+//Coded on 12th June 2019
 /*
 
 Note : Before Using this Code make sure you had followed the below mentioned steps
@@ -337,72 +337,24 @@ Note : Before Using this Code make sure you had followed the below mentioned ste
 
 */
 
-_SECTION_BEGIN("Telegram Alerts - Legacy Method");
 
+_SECTION_BEGIN("Telegram Alerts - Modern Method");
+
+Version(6.17);  //Code is Compatible with 6.17 and Higher
 
 TelegramAlerts = ParamTrigger("Telegram Alert","Send Alert");
 TelegramAPI_ID = ParamStr("Telegram Bot API Key","6217858654:AAGDDVUdBikRa8ayIpg3MKHDq7bF7AZE4Ms");  //Get the Bot API key via BotFather in Telgram
-TelgramCHAT_ID = ParamStr("Telegram Channel ID","-1001619416780"); //Channel ID example : @marketcalls_in
+TelgramCHAT_ID = ParamStr("Telegram Channel ID","-1001619416780");  //Channel ID example : @marketcalls_in
 
-//User Defined Function -> Created using VBscript
-EnableScript("VBScript"); 
-
-<% 
-
-Public Sub Telegram(Message_Text)
-
-
-sAPI_ID = AFL.Var("TelegramAPI_ID")
-sChat_ID = AFL.Var("TelgramCHAT_ID")
-sMSG = Message_Text
-
-'URL to open....
-sUrl = "https://api.telegram.org/bot" & sAPI_ID & "/sendMessage"
-'POST Request to send.
-sRequest = "text=" & sMSG & "&chat_id=" & sChat_ID
-
-
-set oHTTP = CreateObject("Microsoft.XMLHTTP")
-oHTTP.open "POST", sUrl,false
-oHTTP.setRequestHeader "Content-Type", "application/x-www-form-urlencoded"
-oHTTP.setRequestHeader "Content-Length", Len(sRequest)
-oHTTP.send sRequest
-HTTPPost = oHTTP.responseText
-
-
-'Store response 
-'msgbox(objXmlHttpMain.responseText)
-'response.Write (objXmlHttpMain.responseText) 
-
-End Sub 
-
-%> 
-
-tg = GetScriptObject(); 
+Message = "This is a Test Message from Amibroker";
 
 if (TelegramAlerts)
 {
-//code for Telegram alerts to channel
-
-tg.Telegram("This is Telegram Alert from Amibroker");
-
-}//end Telegram alert
-
-_SECTION_END();
-
-
-
-// Wymagana konfiguracja
-_SECTION_BEGIN("Telegram");
-TelegramToken = ParamStr("Telegram Token", "");
-TelegramChatID = ParamStr("Telegram Chat ID", "");
-_SECTION_END();
-
-// Funkcja do wysyłania wiadomości
-function SendTelegramMessage(Message)
-{
-    HTTPPost("https://api.telegram.org/bot" + TelegramToken + "/sendMessage", "chat_id=" + TelegramChatID + "&text=" + Message);
+ih = InternetOpenURL("https://api.telegram.org/bot"+TelegramAPI_ID+"/sendMessage?chat_id="+TelgramCHAT_ID+"&text="+Message ); 
+InternetClose(ih);
 }
+
+_SECTION_END();
 
 
 // Wewnętrzne zmienne sygnałów
@@ -410,25 +362,4 @@ BuySignal = cond3 AND kupno;
 SellSignal = sygnalna   OR (cond2 AND sprzedaz2);
 ShortSignal = cond4 AND sprzedaz;
 CoverSignal =  makd   OR  (cond1 AND kupno2  );
-
-// Warunki wykrywania sygnałów i wysyłania powiadomień
-if (BuySignal)
-{
-    SendTelegramMessage("BUY signal detected");
-}
-
-if (SellSignal)
-{
-    SendTelegramMessage("SELL signal detected");
-}
-
-if (ShortSignal)
-{
-    SendTelegramMessage("SHORT signal detected");
-}
-
-if (CoverSignal)
-{
-    SendTelegramMessage("COVER signal detected");
-}
 
