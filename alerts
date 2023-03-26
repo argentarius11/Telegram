@@ -1,3 +1,5 @@
+#include <HTTP.h>
+
 SetOption("CommissionMode",3);   
     SetOption( "CommissionAmount", 9 ); // ustawienie prowizji   
     SetOption( "initialequity", 20000 ); //kapital poczatkowy 10000   
